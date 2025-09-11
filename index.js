@@ -1,21 +1,23 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { StatusCodes } = require('http-status-codes');
-const route = require('./routes/contact.routes')
+const routeContact = require('./routes/contact.routes')
+const routeUser = require('./routes/user.routes')
+require("dotenv").config();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
-mongoose.connect('mongodb://localhost/carnet-adress')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => console.error('Erreur de connexion à MongoDB:', err));
 
-app.use('/contacts', route);
+app.use('/contacts', routeContact);
+app.use('/users', routeUser);
 
 app.use((req, res) => {
     res.status(StatusCodes.NOT_FOUND)

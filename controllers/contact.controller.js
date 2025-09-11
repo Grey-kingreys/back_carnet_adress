@@ -1,6 +1,7 @@
 const Contact = require('../models/contact')
 const catchAsync = require('../helpers/watchAsync')
 const { StatusCodes } = require('http-status-codes');
+const user = require('../models/user');
 
 const createContact = catchAsync(async (req, res)=>{
     const contact = await Contact.create(req.body);
