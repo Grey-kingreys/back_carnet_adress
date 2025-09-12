@@ -79,6 +79,31 @@ const logoutUser = catchAsync(async (req, res) => {
         });
     }
 });
+
+const logoutAllUser = catchAsync(async (req, res) => {
+    try {
+        // Vérification des données d'authentification
+       req.user.authToken = [];
+        await req.user.save();
+        
+        res.status(StatusCodes.OK).json({
+            status: 'success',
+            message: 'Déconnexion réussie',
+            data: {
+                userId: req.user._id,
+                remainingSessions: req.user.authToken.length
+            }
+        });
+        
+    }catch(error){
+        console.error('Erreur lors de la déconnexion:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: 'error',
+            message: error.message || 'Erreur lors de la déconnexion'
+        });
+        
+    }
+})
     
 
 const getAllUsers = catchAsync(async (req, res) => {
@@ -127,5 +152,6 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
-    logoutUser
+    logoutUser,
+    logoutAllUser
 }

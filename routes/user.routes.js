@@ -8,11 +8,12 @@ const authentification = require('../middleware/authentification')
 router.post('/create', userController.createUser);
 router.post('/login', userController.loginUser);
 router.post('/logout', authentification, userController.logoutUser);
+router.post('/logout/all', authentification, userController.logoutAllUser);
 router.get('/all', authentification, userController.getAllUsers);
 router.get('/me', authentification, userController.getUser);
-router.get('/get/:id', userController.getUserById);
-router.patch('/update/:id', userController.updateUser);
-router.delete('/delete/:id', userController.deleteUser);
+router.get('/get/:id', authentification, userController.getUserById);
+router.patch('/update/:id', authentification, userController.updateUser);
+router.delete('/delete/:id', authentification, userController.deleteUser);
 
 
 module.exports = router

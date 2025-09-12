@@ -41,12 +41,20 @@ const userSchema = new Schema({
     }]
 })
 
+
+userSchema.methods.toJSON = function() {
+    const user = this.toObject();
+    delete user.password;
+    delete user.authToken;
+    return user;
+};
+
 userSchema.methods.generateAuthTokenAndSaveUser = async function(){
     const authToken = jwt.sign({_id: this._id.toString()}, process.env.JWT_SECRET);
     this.authToken.push({authToken});
     await this.save();
     return authToken;
-}
+};
 
 userSchema.statics.findUser = async function(email, password) {
     const user = await this.findOne({email})
@@ -54,7 +62,7 @@ userSchema.statics.findUser = async function(email, password) {
     const isPasswordvalid = await bcrypt.compare(password, user.password);
     if(!isPasswordvalid) throw new Error('Mot de passe invalide');
     return user;
-}
+};
 
 userSchema.pre('save', async function(next) {
     if (this.isModified('password')) {
