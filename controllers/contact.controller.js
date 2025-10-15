@@ -5,23 +5,28 @@ const user = require('../models/user');
 
 const createContact = catchAsync(async (req, res)=>{
     // Ajouter l'ID de l'utilisateur connecté au contact
-    const contactData = {
-        ...req.body,
-        user: req.user._id
-    };
+    // const contactData = {
+    //     ...req.body,
+    //     user: req.user._id
+    // };
+
+    const contactData = req.body;
     const contact = await Contact.create(contactData);
     res.status(StatusCodes.CREATED).send(contact);
 });
 
 const getAllContacts = catchAsync(async (req, res) => {
     // Ne retourner que les contacts de l'utilisateur connecté
-    const allContacts = await Contact.find({ user: req.user._id });
+    // const allContacts = await Contact.find({ user: req.user._id });
+    // res.send(allContacts);
+
+    const allContacts = await Contact.find();
     res.send(allContacts);
 })
 
 const getContactById = catchAsync(async (req, res) => {
     // Vérifier que le contact appartient bien à l'utilisateur connecté
-    const contact = await Contact.findOne({ _id: req.params.id, user: req.user._id });
+    const contact = await Contact.findOne({ _id: req.params.id });
     if(!contact){
         res.status(StatusCodes.NOT_FOUND).send("Contact non trouvé ou accès non autorisé");
         return;

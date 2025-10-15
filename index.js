@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const routeContact = require('./routes/contact.routes')
 const routeUser = require('./routes/user.routes')
 require("dotenv").config();
+const cors = require('cors');
 
 const port = process.env.PORT || 3000;
 
@@ -11,6 +12,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connecté à MongoDB'))
