@@ -1,12 +1,17 @@
 const User = require('../models/user')
 const catchAsync = require('../helpers/watchAsync')
 const { StatusCodes } = require('http-status-codes')
+const mailerService = require('../services/MailerService')
 
 
 const createUser = catchAsync(async (req, res) => {
     const user = await User(req.body);
     try{
         const authToken = await user.generateAuthTokenAndSaveUser();
+        mailerService.sendCreatedAccountEmail({
+            recipient: user.email,
+            name: user.name
+        });
         res.json({
             status: 'success',
             data: { user, authToken }
@@ -125,6 +130,20 @@ const getUserById = catchAsync(async (req, res) => {
     res.send(user);
 })
 
+const checkEmailExists = catchAsync(async (req, res) => {
+  const { email } = req.params;
+  
+  const user = await User.findOne({ email: email.toLowerCase().trim() });
+  
+  res.status(StatusCodes.OK).json({
+    status: 'success',
+    data: {
+      exists: !!user,
+      user: user ? { _id: user._id, name: user.name, email: user.email } : null
+    }
+  });
+});
+
 const updateUser = catchAsync(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
     if(!user){
@@ -153,5 +172,6 @@ module.exports = {
     updateUser,
     deleteUser,
     logoutUser,
-    logoutAllUser
+    logoutAllUser,
+    checkEmailExists,
 }

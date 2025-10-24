@@ -5,6 +5,7 @@ const routeContact = require('./routes/contact.routes')
 const routeUser = require('./routes/user.routes')
 require("dotenv").config();
 const cors = require('cors');
+const routeMessage = require('./routes/message.routes')
 
 const port = process.env.PORT || 3000;
 
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/contacts', routeContact);
 app.use('/users', routeUser);
+app.use('/messages', routeMessage)
 
 app.use((req, res) => {
     res.status(StatusCodes.NOT_FOUND)
