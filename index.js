@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: 'https://back-carnet-adress.onrender.com',
+  origin: 'https://gestion-contact-front-node.onrender.com',
   credentials: true
 }));
 
